@@ -1,0 +1,11 @@
+LLD questions are asked with the person with less than 4 year of exp. After that mostly they asked HLD.
+
+This type of Question generally start with "Design ..."
+
+Steps to follow:
+  1. Write down all requirements
+  2. Clear all the requirement with are important ie, which he/she want int version 0
+  3. Find out nouns in these reuiremnts, this will be your class
+  4. Write all classes and its fields(variables and methods)
+  5. Find the relation between these class(onr to one , many to one etc)
+  6. Write code for some funtions that interviewer wants.
