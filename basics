@@ -1,0 +1,55 @@
+Class Diagram 
+REF : https://www.youtube.com/watch?v=T4h8yOTunss
+
+Its part of UML->Structural diagram
+It has 3 sections (class Name, atrributes, funtions)
+Attributes and functions can be private , public or protected (rep as : -,+,#)
+
+
+Relationships between classes
+1. Association    
+
+Rep as : --------------------- (single line)
+Ex:  [student]--------------[Teacher]
+              teaches to |>
+2. Dependency
+
+Rep as : ...............>  (dotted line followed by arrow)
+Ex:
+ [consumer]--------->[suplier]
+ 
+3. Aggrigation  (has a relationship)
+Rep as ---------------<> (single line followed by unfilled diamond shape)
+Ex:
+
+[library]<|---------------<>[book]
+(container class)       (contained class)
+
+Note : contained class does not have strong dependency on life cycle of container class 
+means if there is no library even we can have books
+
+4. Composition
+It is similar to Aggregation but contained class have strong dependency on life cycle of container class 
+Rep as ---------------<> (single line followed by filled diamond shape)
+
+5. Generalization
+known as "is a" relationship
+
+Rep as : -----------------|> (straight line followed by arraow)
+Arrow will be towards super class
+
+Ex : 
+
+                       [Person]
+                          ^
+                          |
+                          |
+          "is a"          |
+         |--------------------------------|
+         |                                |
+         |                                |
+         |                                |
+     [Student]                         [Teacher]
+
+
+Here person is super class and Student, Teacher is subclass
