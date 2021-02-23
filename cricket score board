@@ -1,0 +1,182 @@
+Question: Design a cricket scoreboard system 
+	Total Score
+	Wickets 
+	Over 
+	Batsman 1 scores 
+	Batsman 2 scores
+	
+	
+1. getScoreBoard
+2. update data 
+
+class Player{
+	private String name;
+	private int teamId;
+	private int role; // bowler, batsman
+	private int status; // 0 => out
+	private int runs;
+	private int wickets;
+	Player(int teamId, String name){
+		this.teamId = teamId;
+		this.name = "P:"+teamId+":"+name;
+		status = 1;
+		runs = 0;
+		wickets = 0;
+	}
+	/**
+	* retuns no of runs scored 
+	* -1 indicate out
+	* available values -1,0,1,2,3,4,5,6
+	*/
+	int hit() { 
+	    return (int)(Math.random()*7-1);
+	}
+}
+class Team{
+	private int teamId;
+	private int runs;
+	private int wickets;
+	private List<Player> players;
+	Team(){
+		players = new ArrayList();
+		runs = 0;
+		wickets = 0;
+	}
+	
+	public void addPlayer(int teamid, String name){
+		Player p = new Player(teamid,name);
+		players.add(p);
+	}
+	/*
+	* it will retun nextPlayer to bat
+	*/
+	public Player getNextPlayerToBat(){
+		for(Player p : players){
+			if(p.status == 1)
+				return p;
+		}
+		System.out.println("No player available ");
+		return null;
+	}
+}
+
+class ScoreBoard{
+	int runs[] = new int[2];
+	int wickets[] = new int[2];
+	
+	public void update(int [] runs,int []wickets){
+		for(int i = 0 ; i < 1 ; i++){
+			this.runs[i] = runs[i];
+			this.wickets[i] = wickets[i];
+		}
+	}
+	public String toString(){
+		
+	}
+}
+class Game {
+	private int win; // it will rep team id which win
+	private int maxOvers;
+	Team teams[];
+	private Player strike,nonStrike;
+	ScoreBoard sb = new ScoreBoard();
+	Game(int maxOvers){
+		this.maxOvers = maxOvers;
+		teams = new Team[2];
+		teams[0] = new Team();
+		teams[1] = new Team();
+		
+		for(int i = 0 ; i < 11 ; i++)
+			teams[0].addPlayer(0,""+i);
+		for(int i = 0 ; i < 11 ; i++)
+			teams[1].addPlayer(1,""+i);
+	}
+	
+	private void processBall(int teamId){
+		if(teams[teamId].wickets > 11) return;
+		
+		Player p = getCurrentPlayer();
+		int runs = p.hit();
+		if(runs == -1){ // out
+			p.status = 0;
+			teams[currBattingTeam].wickets++;
+		}
+		else {
+			p.runs = runs;
+		}
+		ball++;
+		if(ball == 6){
+			ball = 0;
+			overs++;
+		}
+		updateScoreBoard();
+	}
+	
+	void updateScoreBoard();
+		int runs[] = new int[2];
+		int wickets[] = new int[2];
+		runs[currBattingTeam] = teams[currBattingTeam].runs;
+		wickets[currBattingTeam] = teams[currBattingTeam].wickets;
+		sb.update(runs,wickets);
+	}
+	
+	public void start(boolan isTeam0WinToss){
+		if(isTeam0WinToss){ // team0 will play first
+			strike = teams[0].getNextPlayerToBat();
+			nonStrike = teams[0].getNextPlayerToBat();
+			for(int i = 0 ; i < maxOvers ; i++){
+				for(int j = 0 ; j < 6 ; j++){
+					processBall(0);
+				}
+			}
+			for(int i = 0 ; i < maxOvers ; i++){
+				for(int j = 0 ; j < 6 ; j++){
+					processBall(1);
+				}
+			}
+		}
+		else{ // team1 will play first
+			strike = teams[0].getNextPlayerToBat();
+			nonStrike = teams[0].getNextPlayerToBat();
+			for(int i = 0 ; i < maxOvers ; i++){
+				for(int j = 0 ; j < 6 ; j++){
+					processBall(1);
+				}
+			}
+			for(int i = 0 ; i < maxOvers ; i++){
+				for(int j = 0 ; j < 6 ; j++){
+					processBall(0);
+				}
+			}
+		}
+		System.out.println("Game finished : with winner team : "+ getWinner());
+	}
+	/**
+	* return 0,1,-1
+	* 0 means team0 wins
+	* 1 means team1 wins
+	*/
+	public int getWinner(){
+		if(teams[0].runs > teams[1].runs)
+			win = 0;
+		else if(teams[0].runs  < teams[1].runs)
+			win = 1;
+		win = -1; // draw
+		return win;
+	}
+	public boolean tossCoin(){
+		double random = Math.random();
+		if(random < 0.5){
+			return true;
+		}
+		return false;
+	}
+}
+class Main {
+	public static void main(String []s){
+		Game game = new Game(5);
+		game.start(game.tossCoin());
+
+		System.out.println("winner "+ game.getWinner());
+	}
+}
