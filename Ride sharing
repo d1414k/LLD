@@ -1,0 +1,179 @@
+import java.util.*;
+class Person{
+	String name;
+}
+class Rider extends Person{
+	private int id;
+
+	Rider(int id,String name){
+		this.id = id;
+		this.name = name;
+	}
+}
+
+class Driver extends Person{
+	Driver(String name){
+		this.name = name;
+	}
+}
+
+class Ride{
+	private static final int amountPerKm = 20; 
+	private int id;
+	private int riderId;
+	private int origin;
+	private int destination;
+	private int persons;
+	private RideStatus rideStatus;
+	
+	Ride(int riderId,int id,int origin,int destination,int persons){
+		this.riderId = riderId;
+		this.id = id;
+		this.origin = origin;
+		this.destination = destination;
+		this.persons = persons;
+		rideStatus = RideStatus.CREATED;
+	}
+	
+	public int getRiderId() {
+		return riderId;
+	}
+	public void setRiderId(int riderId) {
+		this.riderId = riderId;
+	}
+	public int getOrigin() {
+		return origin;
+	}
+	public void setOrigin(int origin) {
+		this.origin = origin;
+	}
+	public int getDestination() {
+		return destination;
+	}
+	public void setDestination(int destination) {
+		this.destination = destination;
+	}
+	public int getPersons() {
+		return persons;
+	}
+	public void setPersons(int persons) {
+		this.persons = persons;
+	}
+	public RideStatus getRideStatus() {
+		return rideStatus;
+	}
+	public void setRideStatus(RideStatus rideStatus) {
+		this.rideStatus = rideStatus;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+//	public Ride createRide(int riderId,int id,int origin,int destination,int persons) {
+//		return new Ride(riderId,id,origin,destination,persons);
+//	}
+	
+	public int calculateRideAmount() {
+		int amount = 0;
+		if(persons >= 2) {
+			amount = (int)((destination-origin)*amountPerKm*persons*0.75);
+		}
+		else {
+			amount = (int)((destination-origin)*amountPerKm*persons);
+		}
+		return amount;
+	}
+}
+
+class RideSharingSystem{
+	List<Driver> drivers;
+	List<Rider> riders;
+	List<Ride> rides;
+	
+	RideSharingSystem(List<Driver> drivers,List<Rider> riders){
+		this.drivers = drivers;
+		this.riders  = riders;
+		rides = new ArrayList();
+	}
+	void addDriver(String name) {
+		drivers.add(new Driver(name));
+	}
+	void addRider(int id,String name) {
+		riders.add(new Rider(id,name));
+	}
+	
+	void createRide(int riderId,int id,int origin,int destination,int persons) {
+		rides.add(new Ride(riderId,id,origin,destination,persons));
+	}
+	void updateRide(int riderId,int id,int origin,int destination,int persons) {
+		for(Ride ride : rides) {
+			if(ride.getId() == id && ride.getRiderId() == riderId && ride.getRideStatus() == RideStatus.CREATED ) {
+				ride.setOrigin(origin);
+				ride.setDestination(destination);
+				ride.setPersons(persons);
+				return;
+			}
+		}
+	}
+	void withdrawRide(int riderId,int rideId) {
+		for(Ride ride : rides) {
+			if(ride.getId() == rideId && ride.getRiderId() == riderId) {
+				System.out.println("Ride withdrawn");
+				ride.setRideStatus(RideStatus.WITHDRAWN);
+				return;
+			}
+		}
+		System.out.println("Ride can't be withdrawn");
+	}
+	int closeRide(int riderId,int rideId) {
+		for(Ride ride : rides) {
+			if(ride.getId() == rideId && ride.getRiderId() == riderId && ride.getRideStatus() == RideStatus.CREATED) {
+				System.out.print("Ride closed successfully ");
+				ride.setRideStatus(RideStatus.CLOSED);
+				return ride.calculateRideAmount();
+			}
+		}
+		System.out.println("Ride can't be closed");
+		return 0;
+	}
+}
+enum RideStatus{
+	CREATED,WITHDRAWN,CLOSED;
+}
+public class Main {
+	public static void main(String args[]) {
+		Driver d1 = new Driver("Ramesh");
+		Driver d2 = new Driver("Suresh");
+		Driver d3 = new Driver("Ganesh");
+		Driver d4 = new Driver("Rajesh");
+		List<Driver> drivers = new ArrayList();
+		drivers.add(d1);
+		drivers.add(d2);
+		drivers.add(d3);
+		drivers.add(d4);
+		Rider r1 = new Rider(1,"Alice");
+		Rider r2 = new Rider(2,"Bob");
+		Rider r3 = new Rider(3,"Tom");
+		Rider r4 = new Rider(4,"Kim");
+		List<Rider> riders = new ArrayList();
+		riders.add(r1);
+		riders.add(r2);
+		riders.add(r3);
+		riders.add(r4);
+		RideSharingSystem rss = new RideSharingSystem(drivers,riders);
+		rss.createRide(1, 1, 10, 50, 1);
+		System.out.println(rss.closeRide(1, 1));
+		
+		rss.createRide(1, 2, 10, 50, 1);
+		rss.updateRide(1, 2, 10, 60,2);
+		System.out.println(rss.closeRide(1, 2));
+		
+		rss.createRide(1, 3, 10, 50, 1);
+		rss.withdrawRide(2, 3);
+		rss.withdrawRide(1, 3);
+		
+	}
+}
