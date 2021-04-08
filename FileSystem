@@ -1,0 +1,43 @@
+https://www.geeksforgeeks.org/amazon-interview-experience-for-sde-1-7-months-experienced/
+Round4, Q-3
+
+import java.util.*;
+
+public class Main{
+	public static void main(String []ss) {
+		FileSystem fs = new FileSystem();
+		fs.insert();fs.insert();fs.insert();fs.insert();fs.insert();fs.insert();fs.insert();fs.insert();
+		fs.delete(2);
+		fs.delete(4);
+		fs.insert();fs.insert();fs.insert();fs.insert();
+	}	
+}
+
+class FileSystem{
+	private PriorityQueue<Integer> missed;
+	private int size;
+	public FileSystem(){
+		size = 0;
+		missed = new PriorityQueue();
+	}
+	public int insert() {
+		int num = 0;
+		size++;
+		if(missed.size() == 0)
+			num = size;
+		else
+			num = missed.poll();
+		System.out.println("Inserted : "+num);
+		return num;
+	}
+	
+	public void delete(int x) {
+		if(x > size || x < 1) {
+			System.out.println("Invalid num "+x);
+			return;
+		}
+		size--;
+		missed.add(x);
+		System.out.println("Deleted : "+x);
+	}
+}
